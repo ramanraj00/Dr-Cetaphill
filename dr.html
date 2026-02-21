@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dr Cetaphill</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter', sans-serif;
+}
+
+/* ===== FULL PAGE WRAPPER ===== */
+.app{
+  min-height:100vh;
+  width:100%;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ===== DARK DOT MATRIX BACKGROUND ===== */
+.dot-matrix-bg{
+  position:absolute;
+  inset:0;
+  z-index:0;
+
+  background-color:#0a0a0a;
+
+  background-image:
+    radial-gradient(circle at 25% 25%, #222222 0.5px, transparent 1px),
+    radial-gradient(circle at 75% 75%, #111111 0.5px, transparent 1px);
+
+  background-size:10px 10px;
+  image-rendering:pixelated;
+}
+
+/* ===== CONTENT ABOVE BACKGROUND ===== */
+.content{
+  position:relative;
+  z-index:1;
+}
+
+/* NAV WRAPPER */
+.nav-wrapper{
+  display:flex;
+  justify-content:center;
+  padding:30px 20px;
+}
+
+/* NAVBAR */
+.navbar{
+  width:100%;
+  max-width:1100px;
+
+  background: linear-gradient(
+    135deg,
+    #000000 0%,
+    #727272 40%,
+    #3e3e40 100%
+  );
+
+  border:1.5px solid #d6d6f2;
+  border-radius:8px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 20px;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+
+  backdrop-filter: blur(6px);
+}
+
+/* LOGO */
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  position:relative;
+}
+
+.logo::before{
+  content:'';
+  position:absolute;
+  width:70px;
+  height:70px;
+  background:radial-gradient(circle, rgba(120,120,255,0.15), transparent 70%);
+  top:50%;
+  left:20px;
+  transform:translate(-50%, -50%);
+  z-index:-1;
+  filter:blur(20px);
+}
+
+.logo img{
+  width:40px;
+  height:40px;
+  object-fit:cover;
+  border-radius:8px;
+  animation:pulse 2s ease-in-out infinite;
+  transition:all 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pulse{
+  0%{transform:scale(1); filter:brightness(1);}
+  50%{transform:scale(1.08); filter:brightness(1.1);}
+  100%{transform:scale(1); filter:brightness(1);}
+}
+
+.logo:hover img{
+  animation-play-state:paused;
+  transform:rotate(-8deg) scale(1.2);
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+}
+
+.logo-text{
+  font-weight:700;
+  font-size:16px;
+  color:#000;
+}
+
+/* CENTER TEXT */
+.nav-center{
+  font-weight:600;
+  color:#3f3f55;
+  font-size:14px;
+}
+
+/* BUTTON */
+.nav-btn{
+  background:linear-gradient(135deg,#424242,#000000);
+  color:white;
+  border:none;
+  padding:8px 20px;
+  font-size:13px;
+  font-weight:600;
+  border-radius:4px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.nav-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 4px 8px rgba(0,0,0,0.4);
+}
+
+.nav-btn:active{
+  transform:translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- Background -->
+  <div class="dot-matrix-bg"></div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <div class="nav-wrapper">
+      <div class="navbar">
+
+        <div class="logo">
+          <img src="https://i.pinimg.com/1200x/65/cd/7f/65cd7f553b743532453a0b099f1f1b2d.jpg" alt="Dr Cetaphill Logo">
+          <div class="logo-text">Dr Cetaphill</div>
+        </div>
+
+        <div class="nav-center">
+          Check your health status
+        </div>
+
+        <button class="nav-btn">
+          Start Free
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -3,194 +3,1106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dr Cetaphill</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
-
+<title>Dr Cetaphill – AI Medical Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Inter', sans-serif;
+:root {
+  --bg:       #0a0a08;
+  --bg2:      #0f0f0c;
+  --orange:   #f06a1d;
+  --orange2:  #e85d0e;
+  --orange3:  #ff8c42;
+  --amber:    #f5a623;
+  --surface:  #111110;
+  --surface2: #181815;
+  --border:   rgba(240,106,29,0.15);
+  --border2:  rgba(255,255,255,0.06);
+  --text:     #f0ede8;
+  --muted:    #8a8078;
+  --green:    #00e87a;
+  --yellow:   #f5a623;
+  --red:      #ff4d4d;
 }
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:var(--bg);color:var(--text);overflow-x:hidden;}
+html{scroll-behavior:smooth;}
 
-/* ===== FULL PAGE WRAPPER ===== */
-.app{
-  min-height:100vh;
-  width:100%;
-  position:relative;
-  overflow:hidden;
-}
-
-/* ===== DARK DOT MATRIX BACKGROUND ===== */
-.dot-matrix-bg{
-  position:absolute;
-  inset:0;
-  z-index:0;
-
-  background-color:#0a0a0a;
-
+/* subtle grid bg */
+.bg-grid{
+  position:fixed;inset:0;z-index:-2;background:var(--bg);
   background-image:
-    radial-gradient(circle at 25% 25%, #222222 0.5px, transparent 1px),
-    radial-gradient(circle at 75% 75%, #111111 0.5px, transparent 1px);
-
-  background-size:10px 10px;
-  image-rendering:pixelated;
+    linear-gradient(rgba(240,106,29,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240,106,29,0.03) 1px, transparent 1px);
+  background-size:40px 40px;
 }
+.bg-orb{position:fixed;border-radius:50%;filter:blur(140px);pointer-events:none;z-index:-1;}
+.orb-r{width:600px;height:600px;background:rgba(240,106,29,0.07);top:-200px;right:-150px;}
+.orb-l{width:500px;height:500px;background:rgba(240,106,29,0.04);bottom:-100px;left:-150px;}
 
-/* ===== CONTENT ABOVE BACKGROUND ===== */
-.content{
-  position:relative;
-  z-index:1;
-}
-
-/* NAV WRAPPER */
-.nav-wrapper{
-  display:flex;
-  justify-content:center;
-  padding:30px 20px;
-}
-
-/* NAVBAR */
+/* ══════════════════════════════
+   NAVBAR
+   ══════════════════════════════ */
+.nav-wrapper{display:flex;justify-content:center;padding:24px 20px;position:relative;z-index:100;}
 .navbar{
-  width:100%;
-  max-width:1100px;
-
-  background: linear-gradient(
-    135deg,
-    #000000 0%,
-    #727272 40%,
-    #3e3e40 100%
-  );
-
-  border:1.5px solid #d6d6f2;
-  border-radius:8px;
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:14px 20px;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.3);
-
-  backdrop-filter: blur(6px);
+  width:100%;max-width:1160px;
+  background:rgba(14,13,11,0.92);
+  border:1px solid rgba(240,106,29,0.2);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px 12px 16px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 0 1px rgba(240,106,29,0.08) inset, 0 20px 60px rgba(0,0,0,0.6);
+  position:relative;overflow:hidden;
 }
+.navbar::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--orange),transparent);
+  opacity:0.6;
+}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.logo img{width:38px;height:38px;border-radius:8px;object-fit:cover;border:1px solid rgba(240,106,29,0.3);animation:logoPulse 3s ease-in-out infinite;}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,106,29,0);}50%{box-shadow:0 0 12px 3px rgba(240,106,29,0.25);}}
+.logo-text{font-weight:800;font-size:16px;color:var(--text);letter-spacing:0.3px;}
+.logo-sub{font-size:10px;color:var(--orange);font-family:'DM Mono',monospace;letter-spacing:1.5px;margin-top:1px;}
 
-/* LOGO */
-.logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  cursor:pointer;
+/* nav center — proper header style */
+.nav-header{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.nav-header-title{
+  font-size:14px;font-weight:700;color:var(--text);letter-spacing:0.5px;
+}
+.nav-header-sub{
+  font-size:10px;color:var(--orange);font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;
+}
+.nav-pills{display:flex;gap:6px;}
+.nav-pill{
+  font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);
+  padding:5px 14px;border-radius:20px;cursor:pointer;transition:all 0.2s;
+  border:1px solid transparent;
+}
+.nav-pill:hover{color:var(--orange);border-color:rgba(240,106,29,0.3);}
+.nav-pill.active{background:rgba(240,106,29,0.12);color:var(--orange);border-color:rgba(240,106,29,0.3);}
+.nav-cta{
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:white;padding:8px 18px;border-radius:8px;font-size:12px;
+  font-weight:700;border:none;cursor:pointer;transition:all 0.2s;
+  box-shadow:0 4px 16px rgba(240,106,29,0.3);letter-spacing:0.3px;
+}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(240,106,29,0.45);}
+
+/* ══════════════════════════════
+   HERO
+   ══════════════════════════════ */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;max-width:1160px;margin:60px auto;padding:0 40px;gap:60px;align-items:center;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(240,106,29,0.1);border:1px solid rgba(240,106,29,0.25);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--orange);margin-bottom:22px;letter-spacing:0.5px;}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:0.3;}50%{opacity:1;}}
+.hero-title{font-size:58px;font-weight:900;line-height:1.08;margin-bottom:22px;letter-spacing:-1px;}
+.hero-title .hl{color:var(--orange);}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.65;margin-bottom:38px;max-width:480px;}
+.hero-btns{display:flex;gap:14px;}
+.btn-primary{
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:white;padding:13px 28px;border-radius:9px;font-weight:700;border:none;
+  cursor:pointer;transition:all 0.25s;font-size:15px;
+  box-shadow:0 4px 20px rgba(240,106,29,0.4);letter-spacing:0.2px;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(240,106,29,0.55);}
+.btn-ghost{
+  background:transparent;color:var(--text);padding:13px 28px;border-radius:9px;
+  font-weight:600;border:1px solid rgba(255,255,255,0.1);cursor:pointer;
+  transition:all 0.2s;font-size:15px;
+}
+.btn-ghost:hover{border-color:rgba(240,106,29,0.4);color:var(--orange);}
+
+/* hero card */
+.hero-visual{display:flex;justify-content:center;align-items:center;}
+.hero-card{
+  width:340px;padding:28px;
+  background:linear-gradient(160deg,#161612,#0f0f0c);
+  border:1px solid rgba(240,106,29,0.18);border-radius:24px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(240,106,29,0.06) inset;
+  position:relative;overflow:hidden;
+}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange),transparent);}
+.hc-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-family:'DM Mono',monospace;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.hc-label::before{content:'*';font-size:14px;}
+.hc-title{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:24px;line-height:1.4;}
+.hc-title span{color:var(--orange);}
+/* ecg visual */
+.hc-ecg{position:relative;height:60px;margin-bottom:20px;overflow:hidden;}
+.ecg-bg{position:absolute;inset:0;background:rgba(240,106,29,0.03);border:1px solid rgba(240,106,29,0.08);border-radius:10px;}
+.ecg-svg{width:100%;height:100%;}
+.ecg-line{stroke:var(--orange);stroke-width:1.5;fill:none;stroke-dasharray:400;stroke-dashoffset:400;animation:ecgAnim 2.5s linear infinite;}
+@keyframes ecgAnim{0%{stroke-dashoffset:400;opacity:0;}10%{opacity:1;}80%{stroke-dashoffset:0;opacity:1;}100%{stroke-dashoffset:0;opacity:0;}}
+.ecg-glow{stroke:var(--orange);stroke-width:4;fill:none;opacity:0.12;stroke-dasharray:400;stroke-dashoffset:400;animation:ecgAnim 2.5s linear infinite;}
+/* stats row */
+.hc-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.hc-stat{background:rgba(240,106,29,0.06);border:1px solid rgba(240,106,29,0.12);border-radius:10px;padding:12px 14px;}
+.hc-stat-val{font-size:20px;font-weight:800;color:var(--orange);}
+.hc-stat-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;letter-spacing:0.5px;}
+
+/* features strip */
+.features-strip{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;max-width:1100px;margin:0 auto 70px;padding:0 40px;position:relative;z-index:1;}
+.feature-chip{display:flex;align-items:center;gap:9px;background:rgba(240,106,29,0.05);border:1px solid rgba(240,106,29,0.12);border-radius:40px;padding:9px 18px;font-size:12px;color:rgba(255,255,255,0.5);}
+.feature-chip .fc-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;}
+
+/* ══════════════════════════════
+   SHOWCASE CARDS
+   ══════════════════════════════ */
+.showcase{max-width:1160px;margin:0 auto 90px;padding:0 40px;position:relative;z-index:1;}
+.showcase-hdr{text-align:center;margin-bottom:48px;}
+.showcase-hdr h2{font-family:'DM Serif Display',serif;font-size:36px;margin-bottom:10px;}
+.showcase-hdr h2 span{color:var(--orange);}
+.showcase-hdr p{color:var(--muted);font-size:15px;}
+.showcase-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+
+.sc-card{
+  background:linear-gradient(160deg,#111110,#0d0d0b);
+  border:1px solid rgba(240,106,29,0.1);
+  border-radius:18px;padding:26px 26px 22px;
+  position:relative;overflow:hidden;
+  transition:border-color 0.3s,transform 0.3s,box-shadow 0.3s;
+}
+.sc-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top left,rgba(240,106,29,0.05),transparent 60%);pointer-events:none;}
+.sc-card:hover{transform:translateY(-4px);border-color:rgba(240,106,29,0.3);box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 30px rgba(240,106,29,0.06);}
+
+.sc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.sc-tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;padding:4px 10px;border-radius:20px;font-weight:600;background:rgba(240,106,29,0.1);color:var(--orange);border:1px solid rgba(240,106,29,0.2);}
+.sc-icon{width:48px;height:48px;border-radius:12px;background:rgba(240,106,29,0.08);border:1px solid rgba(240,106,29,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* animated SVG icons */
+.icon-heart{animation:heartPump 1.6s ease-in-out infinite;}
+@keyframes heartPump{0%,100%{transform:scale(1);}20%{transform:scale(1.2);}40%{transform:scale(1);}60%{transform:scale(1.1);}80%{transform:scale(1);}}
+.ecg-scan{stroke:var(--orange);stroke-width:1.8;fill:none;stroke-dasharray:70;stroke-dashoffset:70;animation:ecgScan 1.8s ease-in-out infinite;}
+@keyframes ecgScan{0%{stroke-dashoffset:70;opacity:0;}20%{opacity:1;}80%{stroke-dashoffset:0;}100%{stroke-dashoffset:0;opacity:0;}}
+.brain-ring{fill:none;stroke:var(--orange);stroke-width:1;animation:brainRing 2s ease-out infinite;}
+.brain-ring2{animation-delay:.7s;}
+@keyframes brainRing{0%{r:5;opacity:.8;}100%{r:14;opacity:0;}}
+.brain-core{fill:var(--orange);animation:brainCore 2s ease-in-out infinite;}
+@keyframes brainCore{0%,100%{opacity:.6;}50%{opacity:1;}}
+.dna-dot{fill:var(--orange);animation:dnaGlow 1.5s ease-in-out infinite;}
+.dna-dot:nth-child(2){animation-delay:.4s;}.dna-dot:nth-child(3){animation-delay:.8s;}
+@keyframes dnaGlow{0%,100%{opacity:.3;}50%{opacity:1;}}
+.shield-bg{fill:rgba(240,106,29,0.12);animation:shieldPulse 2s ease-in-out infinite;}
+@keyframes shieldPulse{0%,100%{opacity:.4;}50%{opacity:.9;}}
+.shield-edge{fill:none;stroke:var(--orange);stroke-width:1.4;animation:shieldEdge 2s ease-in-out infinite;}
+@keyframes shieldEdge{0%,100%{stroke-opacity:.4;}50%{stroke-opacity:1;}}
+.shield-tick{stroke:var(--orange);stroke-width:2;fill:none;stroke-dasharray:18;stroke-dashoffset:18;animation:tickDraw .8s ease forwards .4s;stroke-linecap:round;stroke-linejoin:round;}
+@keyframes tickDraw{to{stroke-dashoffset:0;}}
+
+.sc-title{font-family:'DM Serif Display',serif;font-size:19px;color:var(--text);margin-bottom:7px;line-height:1.3;}
+.sc-desc{font-size:12.5px;line-height:1.7;color:var(--muted);margin-bottom:18px;}
+.sc-mock{border-radius:10px;background:rgba(240,106,29,0.03);border:1px solid rgba(240,106,29,0.08);padding:14px;}
+
+/* vital readings */
+.vr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.vr:last-child{margin-bottom:0;}
+.vr-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);width:82px;flex-shrink:0;}
+.vr-bg{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.vr-fill{height:100%;border-radius:3px;animation:vBarPulse 2.5s ease-in-out infinite alternate;}
+.vr-fill.g{background:linear-gradient(90deg,#00e87a,#00c462);}
+.vr-fill.y{background:linear-gradient(90deg,var(--orange),#f5a623);}
+.vr-fill.r{background:linear-gradient(90deg,#ff4d4d,#cc1111);}
+@keyframes vBarPulse{0%{opacity:.6;}100%{opacity:1;}}
+.vr-val{font-size:10px;font-family:'DM Mono',monospace;width:40px;text-align:right;}
+
+/* insight rows */
+.ir{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:7px;margin-bottom:5px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);}
+.ir:last-child{margin-bottom:0;}
+.ir-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;animation:dotBlink 2s ease-in-out infinite;}
+@keyframes dotBlink{0%,100%{opacity:.4;}50%{opacity:1;}}
+.ir-dot.g{background:#00e87a;}.ir-dot.y{background:var(--orange);animation-delay:.5s;}.ir-dot.r{background:#ff4d4d;animation-delay:1s;}
+.ir-text{font-size:11px;color:var(--muted);flex:1;}
+.ir-badge{font-size:9px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:8px;}
+.ir-badge.ok{background:rgba(0,232,122,0.1);color:#00e87a;}
+.ir-badge.w{background:rgba(240,106,29,0.1);color:var(--orange);}
+.ir-badge.fl{background:rgba(255,77,77,0.1);color:#ff4d4d;}
+
+/* biomarker grid */
+.bm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.bm-cell{background:rgba(240,106,29,0.04);border:1px solid rgba(240,106,29,0.1);border-radius:9px;padding:9px 7px;text-align:center;animation:bmPulse 3s ease-in-out infinite;}
+.bm-cell:nth-child(2){animation-delay:.5s;}.bm-cell:nth-child(3){animation-delay:1s;}.bm-cell:nth-child(4){animation-delay:1.5s;}.bm-cell:nth-child(5){animation-delay:2s;}.bm-cell:nth-child(6){animation-delay:2.5s;}
+@keyframes bmPulse{0%,100%{border-color:rgba(240,106,29,0.08);}50%{border-color:rgba(240,106,29,0.25);}}
+.bm-val{font-size:12px;font-weight:700;font-family:'DM Mono',monospace;color:var(--orange);}
+.bm-name{font-size:9px;color:var(--muted);margin-top:2px;}
+.bm-status{font-size:8px;margin-top:2px;}
+
+/* risk rows */
+.risk-rows{display:flex;flex-direction:column;gap:8px;}
+.risk-row{display:flex;align-items:center;gap:10px;}
+.risk-label{font-size:10px;color:var(--muted);width:88px;flex-shrink:0;font-family:'DM Mono',monospace;}
+.risk-segs{display:flex;gap:3px;flex:1;}
+.risk-seg{height:7px;border-radius:2px;flex:1;background:rgba(255,255,255,0.05);}
+.risk-seg.low{background:#00e87a;}.risk-seg.med{background:var(--orange);}.risk-seg.hi{background:#ff4d4d;}
+.risk-val{font-size:10px;font-family:'DM Mono',monospace;width:28px;text-align:right;}
+
+/* ══════════════════════════════
+   ANALYZER SECTION
+   ══════════════════════════════ */
+.analyzer{max-width:1160px;margin:0 auto 100px;padding:0 40px;position:relative;z-index:1;}
+.sec-header{text-align:center;margin-bottom:44px;}
+.sec-header h2{font-family:'DM Serif Display',serif;font-size:38px;margin-bottom:10px;}
+.sec-header h2 span{color:var(--orange);}
+.sec-header p{color:var(--muted);font-size:15px;}
+
+/* mini API banner */
+.api-banner{
+  background:rgba(14,13,11,0.9);border:1px solid rgba(240,106,29,0.18);
+  border-radius:12px;padding:12px 18px;margin-bottom:18px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  position:relative;overflow:hidden;
+}
+.api-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--orange),transparent);}
+.api-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(240,106,29,0.1);border:1px solid rgba(240,106,29,0.2);border-radius:20px;padding:2px 10px;font-size:10px;color:var(--orange);font-family:'DM Mono',monospace;margin-bottom:4px;}
+.api-text{flex:1;min-width:160px;}
+.api-text h3{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.api-text p{font-size:11px;color:var(--muted);line-height:1.4;}
+.api-text a{color:var(--orange);text-decoration:none;}
+.api-input-wrap{display:flex;gap:8px;align-items:center;flex:1;min-width:210px;}
+.api-input-wrap input{
+  flex:1;background:rgba(240,106,29,0.04);border:1px solid rgba(240,106,29,0.2);border-radius:8px;
+  padding:8px 12px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none;transition:border-color .2s;
+}
+.api-input-wrap input:focus{border-color:rgba(240,106,29,0.5);}
+.api-input-wrap input::placeholder{color:rgba(255,255,255,0.2);}
+.api-save{background:linear-gradient(135deg,var(--orange),var(--orange2));border:none;border-radius:7px;color:white;padding:8px 14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.api-save:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(240,106,29,0.4);}
+.api-saved{display:none;font-size:10px;color:var(--green);font-family:'DM Mono',monospace;}
+.api-saved.show{display:block;}
+
+/* form grid */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+@media(max-width:640px){.form-grid{grid-template-columns:1fr;}}
+
+.field-card{
+  background:linear-gradient(160deg,#111110,#0d0d0b);
+  border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px 20px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.field-card:focus-within{border-color:rgba(240,106,29,0.35);box-shadow:0 0 0 3px rgba(240,106,29,0.05);}
+.field-card label{
+  display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--orange);font-family:'DM Mono',monospace;margin-bottom:10px;
+}
+/* ASTERISK instead of // */
+.field-card label::before{content:'*';opacity:0.7;font-size:13px;font-weight:700;}
+.field-card input{
+  width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.07);
+  padding:7px 0;color:var(--text);font-size:14px;outline:none;transition:border-color .2s;
+}
+.field-card input:focus{border-color:rgba(240,106,29,0.4);}
+.field-card input::placeholder{color:rgba(255,255,255,0.18);font-size:13px;}
+
+.upload-card{
+  background:linear-gradient(160deg,#111110,#0d0d0b);
+  border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px 20px;grid-column:1/-1;
+}
+.upload-card>label{
+  display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--orange);font-family:'DM Mono',monospace;margin-bottom:14px;
+}
+.upload-card>label::before{content:'*';opacity:0.7;font-size:13px;font-weight:700;}
+
+.drop-zone{
+  border:1.5px dashed rgba(240,106,29,0.2);border-radius:12px;padding:36px 24px;
+  text-align:center;cursor:pointer;transition:all .25s;position:relative;background:rgba(240,106,29,0.02);
+}
+.drop-zone:hover,.drop-zone.dragover{border-color:rgba(240,106,29,0.5);background:rgba(240,106,29,0.04);box-shadow:0 0 30px rgba(240,106,29,0.05) inset;}
+.drop-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.drop-icon{width:52px;height:52px;margin:0 auto 14px;background:rgba(240,106,29,0.1);border:1px solid rgba(240,106,29,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.drop-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px;}
+.drop-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:14px;}
+.drop-formats{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;}
+.fmt-pill{padding:3px 10px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;background:rgba(240,106,29,0.06);border:1px solid rgba(240,106,29,0.15);color:rgba(255,255,255,0.4);}
+
+.file-preview{display:none;align-items:center;gap:12px;background:rgba(0,232,122,0.04);border:1px solid rgba(0,232,122,0.15);border-radius:10px;padding:12px 16px;margin-top:10px;}
+.file-preview.active{display:flex;}
+.file-thumb{width:42px;height:48px;border-radius:6px;background:rgba(255,255,255,0.05);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;}
+.file-thumb img{width:100%;height:100%;object-fit:cover;}
+.file-info{flex:1;min-width:0;}
+.file-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-meta{font-size:10px;color:var(--green);font-family:'DM Mono',monospace;margin-top:2px;}
+.file-remove{background:none;border:none;color:rgba(255,255,255,0.3);font-size:18px;cursor:pointer;padding:4px;transition:color .2s;}
+.file-remove:hover{color:var(--red);}
+
+.ocr-wrap{display:none;margin-top:10px;background:rgba(240,106,29,0.03);border:1px solid rgba(240,106,29,0.1);border-radius:8px;padding:10px 14px;}
+.ocr-wrap.active{display:block;}
+.ocr-row{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;display:flex;justify-content:space-between;}
+.ocr-bg{background:rgba(255,255,255,0.05);border-radius:3px;height:3px;overflow:hidden;}
+.ocr-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--orange),var(--amber));transition:width .3s;}
+.ocr-note{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:10px;color:rgba(255,255,255,0.2);font-family:'DM Mono',monospace;}
+.ocr-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);animation:blink 1.5s infinite;}
+
+.manual-fallback{margin-top:14px;}
+.or-div{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.05);}
+.or-div span{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px;white-space:nowrap;}
+.manual-fallback textarea{
+  width:100%;background:rgba(240,106,29,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:9px;
+  padding:12px 14px;color:rgba(255,255,255,0.7);font-family:'DM Mono',monospace;font-size:12px;
+  outline:none;resize:vertical;min-height:110px;line-height:1.7;transition:border-color .2s;
+}
+.manual-fallback textarea:focus{border-color:rgba(240,106,29,0.3);}
+.manual-fallback textarea::placeholder{color:rgba(255,255,255,0.15);}
+
+.history-card{
+  background:linear-gradient(160deg,#111110,#0d0d0b);
+  border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px 20px;grid-column:1/-1;
+}
+.hist-label{
+  font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--orange);font-family:'DM Mono',monospace;margin-bottom:14px;display:flex;align-items:center;gap:6px;
+}
+.hist-label::before{content:'*';opacity:0.7;font-size:13px;font-weight:700;}
+.hist-entry{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:9px;padding:10px 14px;margin-bottom:8px;display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;}
+.hist-entry input{background:transparent;border:none;border-bottom:1px dashed rgba(255,255,255,0.07);padding:5px 0;color:var(--text);font-size:12px;font-family:'Inter',sans-serif;outline:none;}
+.hist-entry input:focus{border-color:rgba(240,106,29,0.4);}
+.hist-entry input::placeholder{color:rgba(255,255,255,0.18);}
+.btn-rem{background:none;border:none;color:var(--red);cursor:pointer;opacity:0.35;font-size:18px;padding:3px;transition:opacity .2s;}
+.btn-rem:hover{opacity:1;}
+.btn-add-hist{background:none;border:1px dashed rgba(255,255,255,0.07);border-radius:7px;color:rgba(255,255,255,0.22);padding:9px 14px;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;width:100%;transition:all .2s;margin-top:2px;}
+.btn-add-hist:hover{border-color:var(--orange);color:var(--orange);}
+
+.ctx-card{
+  background:linear-gradient(160deg,#111110,#0d0d0b);
+  border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px 20px;grid-column:1/-1;
+  transition:border-color .2s;
+}
+.ctx-card:focus-within{border-color:rgba(240,106,29,0.3);}
+.ctx-card label{display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);font-family:'DM Mono',monospace;margin-bottom:12px;}
+.ctx-card label::before{content:'*';opacity:0.7;font-size:13px;font-weight:700;}
+.ctx-card textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.07);padding:7px 0;color:var(--text);font-size:13px;outline:none;resize:none;line-height:1.7;min-height:64px;transition:border-color .2s;}
+.ctx-card textarea:focus{border-color:rgba(240,106,29,0.4);}
+.ctx-card textarea::placeholder{color:rgba(255,255,255,0.16);}
+
+/* ══════════════════════════════
+   3D PREMIUM ANALYZE BUTTON
+   ══════════════════════════════ */
+.analyze-btn{
+  display:block;width:100%;padding:0;margin-top:14px;
+  background:none;border:none;cursor:pointer;
+  border-radius:14px;
+  /* 3D base shadow */
+  filter: drop-shadow(0 8px 24px rgba(240,106,29,0.25));
+  transition:filter .3s, transform .2s;
+  transform-style:preserve-3d;
+  perspective:800px;
+}
+.analyze-btn:disabled{opacity:.4;cursor:not-allowed;filter:none;transform:none;}
+
+.analyze-btn-inner{
+  width:100%;padding:0;
+  border-radius:14px;
   position:relative;
+  transform-style:preserve-3d;
+  transition:transform .2s cubic-bezier(.17,.67,.4,1.2), box-shadow .2s;
+}
+/* 3D face */
+.analyze-btn-face{
+  padding:20px 32px;
+  background:linear-gradient(160deg, #2a1506 0%, #1a0d03 40%, #0f0802 100%);
+  border:1px solid rgba(240,106,29,0.35);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;gap:20px;
+  position:relative;overflow:hidden;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.06) inset,
+    0 -3px 0 rgba(0,0,0,0.5) inset;
+  transition:all .2s;
+}
+/* top highlight line */
+.analyze-btn-face::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(240,106,29,0.6),transparent);
+}
+/* subtle inner glow */
+.analyze-btn-face::after{
+  content:'';position:absolute;inset:0;border-radius:14px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(240,106,29,0.08),transparent 60%);
+  pointer-events:none;
 }
 
-.logo::before{
-  content:'';
-  position:absolute;
-  width:70px;
-  height:70px;
-  background:radial-gradient(circle, rgba(120,120,255,0.15), transparent 70%);
-  top:50%;
-  left:20px;
-  transform:translate(-50%, -50%);
-  z-index:-1;
-  filter:blur(20px);
+/* hover 3D effect */
+.analyze-btn:hover .analyze-btn-inner{
+  transform:translateY(-4px) rotateX(4deg);
+  box-shadow:0 14px 0 rgba(120,50,0,0.5), 0 20px 40px rgba(0,0,0,0.5);
+}
+.analyze-btn:hover .analyze-btn-face{
+  border-color:rgba(240,106,29,0.6);
+  background:linear-gradient(160deg, #321808 0%, #1f1004 40%, #130a02 100%);
+}
+.analyze-btn:active .analyze-btn-inner{
+  transform:translateY(-1px) rotateX(1deg);
+  box-shadow:0 4px 0 rgba(120,50,0,0.5);
 }
 
-.logo img{
-  width:40px;
-  height:40px;
-  object-fit:cover;
-  border-radius:8px;
-  animation:pulse 2s ease-in-out infinite;
-  transition:all 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.abtn-icon{
+  width:44px;height:44px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(240,106,29,0.3),rgba(200,80,0,0.2));
+  border:1px solid rgba(240,106,29,0.3);
+  display:flex;align-items:center;justify-content:center;
 }
+/* animated DNA icon in button */
+.abtn-svg{animation:btnIconPulse 2s ease-in-out infinite;}
+@keyframes btnIconPulse{0%,100%{opacity:.7;}50%{opacity:1;filter:drop-shadow(0 0 4px var(--orange));}}
 
-@keyframes pulse{
-  0%{transform:scale(1); filter:brightness(1);}
-  50%{transform:scale(1.08); filter:brightness(1.1);}
-  100%{transform:scale(1); filter:brightness(1);}
-}
+.abtn-text{text-align:left;}
+.abtn-title{display:block;font-size:17px;font-weight:800;color:var(--text);letter-spacing:0.3px;}
+.abtn-sub{display:block;font-size:10px;color:rgba(240,106,29,0.6);font-family:'DM Mono',monospace;letter-spacing:1.5px;margin-top:3px;text-transform:uppercase;}
 
-.logo:hover img{
-  animation-play-state:paused;
-  transform:rotate(-8deg) scale(1.2);
-  box-shadow:0 4px 12px rgba(0,0,0,0.3);
-}
+.error-box{background:rgba(255,77,109,0.07);border:1px solid rgba(255,77,109,0.25);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--red);display:none;margin-top:14px;}
+.error-box.active{display:block;}
 
-.logo-text{
-  font-weight:700;
-  font-size:16px;
-  color:#000;
-}
+/* loading */
+.loading{display:none;text-align:center;padding:60px 20px;background:linear-gradient(160deg,#111110,#0d0d0b);border:1px solid rgba(240,106,29,0.1);border-radius:18px;margin-top:14px;}
+.loading.active{display:block;}
+.pulse-ring{width:60px;height:60px;margin:0 auto 22px;position:relative;}
+.pulse-ring::before,.pulse-ring::after{content:'';position:absolute;inset:0;border:2px solid var(--orange);border-radius:50%;animation:pulseOut 2s ease-out infinite;}
+.pulse-ring::after{animation-delay:1s;}
+.pulse-inner{position:absolute;inset:11px;background:linear-gradient(135deg,var(--orange),var(--orange2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;}
+@keyframes pulseOut{0%{transform:scale(.8);opacity:1;}100%{transform:scale(2.2);opacity:0;}}
+.loading-steps{display:flex;justify-content:center;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.step-pill{padding:5px 12px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;border:1px solid rgba(240,106,29,0.15);color:var(--muted);opacity:0;animation:stepIn .5s forwards;}
+@keyframes stepIn{to{opacity:1;}}
 
-/* CENTER TEXT */
-.nav-center{
-  font-weight:600;
-  color:#3f3f55;
-  font-size:14px;
-}
+/* output */
+#output{display:none;}#output.active{display:block;}
+.out-wrap{background:linear-gradient(160deg,#111110,#0d0d0b);border:1px solid rgba(240,106,29,0.12);border-radius:18px;overflow:hidden;margin-top:14px;}
+.out-header{padding:22px 28px;background:rgba(240,106,29,0.03);border-bottom:1px solid rgba(240,106,29,0.08);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+.out-title{font-family:'DM Serif Display',serif;font-size:19px;display:flex;align-items:center;gap:9px;}
+.status-badge{padding:4px 13px;border-radius:10px;font-size:11px;font-weight:700;letter-spacing:.5px;}
+.sb-ok{background:rgba(0,232,122,0.1);color:var(--green);border:1px solid rgba(0,232,122,0.2);}
+.sb-watch{background:rgba(240,106,29,0.1);color:var(--orange);border:1px solid rgba(240,106,29,0.2);}
+.sb-crit{background:rgba(255,77,77,0.1);color:var(--red);border:1px solid rgba(255,77,77,0.2);}
+.copy-btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);color:var(--muted);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:11px;font-family:'DM Mono',monospace;transition:all .2s;}
+.copy-btn:hover{border-color:var(--orange);color:var(--orange);}
+.out-body{padding:22px;}
+.out-body strong{color:var(--text);}
+.out-body code{font-family:'DM Mono',monospace;font-size:11px;background:rgba(240,106,29,0.08);padding:2px 6px;border-radius:4px;color:var(--orange);}
 
-/* BUTTON */
-.nav-btn{
-  background:linear-gradient(135deg,#424242,#000000);
-  color:white;
-  border:none;
-  padding:8px 20px;
-  font-size:13px;
-  font-weight:600;
-  border-radius:4px;
-  cursor:pointer;
-  transition:0.3s;
-}
+.rep-card{background:linear-gradient(160deg,#111110,#0d0d0b);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:22px 24px;margin-bottom:14px;transition:border-color .2s;}
+.rep-card:hover{border-color:rgba(240,106,29,0.2);}
+.rep-card.c-sum{border-left:3px solid var(--orange);}
+.rep-card.c-act{border-left:3px solid var(--green);background:linear-gradient(160deg,#0a1009,#080d07);}
+.rep-card.c-urg{border-left:3px solid var(--red);background:linear-gradient(160deg,#150808,#0f0606);}
+.rep-card.c-watch{border-left:3px solid var(--amber);}
+.rc-h{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:7px;}
+.rc-p{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.65);margin-bottom:8px;}
+.rc-list{list-style:none;padding:0;margin:0;}
+.rc-list li{font-size:13px;line-height:1.7;color:rgba(255,255,255,0.65);padding:5px 0 5px 18px;position:relative;border-bottom:1px solid rgba(255,255,255,0.03);}
+.rc-list li::before{content:'›';position:absolute;left:3px;color:var(--orange);font-weight:700;}
+.rc-list li.li-g{color:rgba(0,232,122,0.85);}.rc-list li.li-y{color:rgba(240,106,29,0.9);}.rc-list li.li-r{color:rgba(255,77,109,0.9);}
+.sl{display:flex;align-items:flex-start;gap:7px;padding:9px 12px;border-radius:8px;margin-bottom:7px;font-size:13px;line-height:1.6;}
+.sl-g{background:rgba(0,232,122,0.05);color:rgba(0,232,122,0.9);border:1px solid rgba(0,232,122,0.1);}
+.sl-y{background:rgba(240,106,29,0.06);color:rgba(240,106,29,0.9);border:1px solid rgba(240,106,29,0.12);}
+.sl-r{background:rgba(255,77,109,0.06);color:rgba(255,100,120,0.95);border:1px solid rgba(255,77,109,0.12);}
+.rc-sub{font-size:12px;font-weight:700;color:rgba(255,255,255,0.8);margin:12px 0 5px;}
+.tw{overflow-x:auto;}
+.tw table{width:100%;border-collapse:collapse;font-size:12px;}
+.tw th{text-align:left;padding:9px 10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.tw td{padding:10px 10px;border:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);line-height:1.5;vertical-align:top;}
+.tw tr:hover td{background:rgba(255,255,255,0.01);}
+.tw td.sg{color:var(--green);font-weight:600;}.tw td.sy{color:var(--orange);font-weight:600;}.tw td.sr{color:var(--red);font-weight:600;}
+.act-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:600px){.act-grid{grid-template-columns:1fr;}}
+.act-block{background:rgba(255,255,255,0.02);border-radius:10px;padding:12px 14px;border:1px solid rgba(255,255,255,0.04);}
+.act-title{font-size:12px;font-weight:700;margin-bottom:7px;}
+.act-item{font-size:12px;line-height:1.6;color:rgba(255,255,255,0.6);padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
+.act-item:last-child{border-bottom:none;}
 
-.nav-btn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 4px 8px rgba(0,0,0,0.4);
+/* ══════════════════════════════
+   FOOTER
+   ══════════════════════════════ */
+.footer{text-align:center;padding:48px 40px 56px;border-top:1px solid rgba(255,255,255,0.04);position:relative;z-index:1;}
+.footer-dis{font-size:11px;color:rgba(255,255,255,0.15);font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:26px;}
+.footer-team{display:inline-block;cursor:pointer;}
+.footer-team-label{font-size:13px;font-weight:600;color:rgba(255,255,255,0.35);display:flex;align-items:center;gap:8px;justify-content:center;transition:color .2s;user-select:none;}
+.footer-team-label:hover{color:rgba(255,255,255,0.6);}
+/* orange theme for team name */
+.team-name{
+  background:linear-gradient(90deg,var(--orange),var(--amber),var(--orange3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-weight:800;font-size:15px;
 }
+.chevron{font-size:10px;transition:transform .3s;color:rgba(255,255,255,0.25);-webkit-text-fill-color:rgba(255,255,255,0.25);}
+.footer-team.open .chevron{transform:rotate(180deg);}
+.team-members{max-height:0;overflow:hidden;transition:max-height .45s ease,opacity .35s ease;opacity:0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:0;}
+.team-members.vis{max-height:200px;opacity:1;margin-top:20px;}
+.member-card{
+  background:linear-gradient(135deg,rgba(20,13,5,0.9),rgba(15,10,3,0.95));
+  border:1px solid rgba(240,106,29,0.12);border-radius:12px;padding:12px 18px;
+  display:flex;align-items:center;gap:10px;transition:all .2s;opacity:0;
+}
+.team-members.vis .member-card{animation:memIn .4s ease forwards;}
+.member-card:nth-child(1){animation-delay:.05s;}.member-card:nth-child(2){animation-delay:.15s;}.member-card:nth-child(3){animation-delay:.25s;}.member-card:nth-child(4){animation-delay:.35s;}
+@keyframes memIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.member-card:hover{border-color:rgba(240,106,29,0.3);transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.4);}
+.mem-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
+.mem-name{font-size:12px;font-weight:600;color:rgba(255,255,255,0.82);}
+.mem-num{font-size:9px;font-family:'DM Mono',monospace;color:var(--muted);}
 
-.nav-btn:active{
-  transform:translateY(0);
-}
+/* responsive */
+@media(max-width:968px){.hero{grid-template-columns:1fr;text-align:center;}.hero-sub{max-width:100%;}.hero-btns{justify-content:center;}.hero-visual{display:none;}.showcase-grid{grid-template-columns:1fr;}.nav-pills{display:none;}}
+@media(max-width:640px){.hero-title{font-size:38px;}.analyzer,.showcase{padding:0 16px;}.out-body{padding:16px;}.hist-entry{grid-template-columns:1fr auto;}.hist-entry input:first-child{grid-column:1/-1;}.features-strip{padding:0 16px;gap:8px;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp .5s ease forwards;}
 </style>
 </head>
-
 <body>
+<div class="bg-grid"></div>
+<div class="bg-orb orb-r"></div>
+<div class="bg-orb orb-l"></div>
 
-<div class="app">
-
-  <!-- Background -->
-  <div class="dot-matrix-bg"></div>
-
-  <!-- Content -->
-  <div class="content">
-
-    <div class="nav-wrapper">
-      <div class="navbar">
-
-        <div class="logo">
-          <img src="https://i.pinimg.com/1200x/65/cd/7f/65cd7f553b743532453a0b099f1f1b2d.jpg" alt="Dr Cetaphill Logo">
-          <div class="logo-text">Dr Cetaphill</div>
-        </div>
-
-        <div class="nav-center">
-          Check your health status
-        </div>
-
-        <button class="nav-btn">
-          Start Free
-        </button>
-
+<!-- ═══════ NAVBAR ═══════ -->
+<div class="nav-wrapper">
+  <div class="navbar">
+    <div class="logo">
+      <img src="https://i.pinimg.com/1200x/65/cd/7f/65cd7f553b743532453a0b099f1f1b2d.jpg" alt="Dr Cetaphill">
+      <div>
+        <div class="logo-text">Dr Cetaphill</div>
+        <div class="logo-sub">MED-AGENT PRO</div>
       </div>
     </div>
 
-  </div>
+    <!-- Proper header — not plain text -->
+    <div class="nav-header">
+      <div class="nav-header-title">AI Medical Intelligence Platform</div>
+      <div class="nav-header-sub">Clinical · Biomarker · Risk · Trend</div>
+    </div>
 
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="nav-pills">
+        <span class="nav-pill active">Features</span>
+        <span class="nav-pill">How it Works</span>
+        <span class="nav-pill">About</span>
+      </div>
+      <button class="nav-cta" onclick="document.getElementById('analyzer').scrollIntoView({behavior:'smooth'})">Start Free →</button>
+    </div>
+  </div>
 </div>
 
+<!-- ═══════ HERO ═══════ -->
+<section class="hero">
+  <div>
+    <div class="hero-badge"><div class="hero-badge-dot"></div>⚕ AI-Powered Health Intelligence</div>
+    <h1 class="hero-title">Analyze Your<br><span class="hl">Medical Report</span><br>in One Go.</h1>
+    <p class="hero-sub">Transform complex lab results into a clear intelligence dashboard. Detect risks, track trends, and take control of your wellness.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('analyzer').scrollIntoView({behavior:'smooth'})">Get Started Free</button>
+      <button class="btn-ghost" onclick="loadSample()">View Sample Report</button>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card">
+      <div class="hc-label">Live Analysis</div>
+      <div class="hc-title">Your <span>medical data</span>,<br>decoded in seconds.</div>
+      <div class="hc-ecg">
+        <div class="ecg-bg"></div>
+        <svg class="ecg-svg" viewBox="0 0 340 60" preserveAspectRatio="none">
+          <polyline class="ecg-glow" points="0,30 50,30 65,30 72,10 78,50 85,30 120,30 135,30 142,8 148,52 155,30 200,30 210,5 218,55 225,30 280,30 340,30"/>
+          <polyline class="ecg-line" points="0,30 50,30 65,30 72,10 78,50 85,30 120,30 135,30 142,8 148,52 155,30 200,30 210,5 218,55 225,30 280,30 340,30"/>
+        </svg>
+      </div>
+      <div class="hc-stats">
+        <div class="hc-stat"><div class="hc-stat-val">98%</div><div class="hc-stat-label">ACCURACY RATE</div></div>
+        <div class="hc-stat"><div class="hc-stat-val">&lt;60s</div><div class="hc-stat-label">ANALYSIS TIME</div></div>
+        <div class="hc-stat"><div class="hc-stat-val">12+</div><div class="hc-stat-label">BIOMARKERS</div></div>
+        <div class="hc-stat"><div class="hc-stat-val">Free</div><div class="hc-stat-label">ALWAYS</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- feature chips -->
+<div class="features-strip">
+  <div class="feature-chip"><div class="fc-dot"></div>LOINC + ICD-10 Mapping</div>
+  <div class="feature-chip"><div class="fc-dot"></div>Longitudinal Trend Analysis</div>
+  <div class="feature-chip"><div class="fc-dot"></div>Chain-of-Thought Reasoning</div>
+  <div class="feature-chip"><div class="fc-dot"></div>Hallucination Guardrails</div>
+  <div class="feature-chip"><div class="fc-dot"></div>Personalized Action Plan</div>
+</div>
+
+<!-- ═══════ SHOWCASE CARDS ═══════ -->
+<section class="showcase">
+  <div class="showcase-hdr">
+    <h2>What Dr Cetaphill <span>Reveals</span></h2>
+    <p>Four lenses of clinical intelligence — applied to every report you upload.</p>
+  </div>
+  <div class="showcase-grid fade-up">
+
+    <!-- Vital Signs -->
+    <div class="sc-card">
+      <div class="sc-top">
+        <span class="sc-tag">Module 01</span>
+        <div class="sc-icon">
+          <svg width="28" height="28" viewBox="0 0 30 30">
+            <path class="icon-heart" d="M15 26 C7 19,2 14,2 9.5 C2 5.9 4.9 3 8.5 3 C10.5 3 12.4 4 13.5 5.6 C14.5 4 16.4 3 18.5 3 C22.1 3 25 5.9 25 9.5 C25 14,21 19,15 26Z" fill="none" stroke="var(--orange)" stroke-width="1.8" stroke-linejoin="round"/>
+            <polyline class="ecg-scan" points="3,15 7,15 9,9 11,21 13,15 17,15 19,11 21,19 23,15 27,15"/>
+          </svg>
+        </div>
+      </div>
+      <div class="sc-title">Vital Signs Overview</div>
+      <div class="sc-desc">Core biomarkers mapped against clinical reference ranges — blood pressure, pulse, O₂, glucose and more.</div>
+      <div class="sc-mock">
+        <div class="vr"><span class="vr-label">Blood Pressure</span><div class="vr-bg"><div class="vr-fill y" style="width:72%"></div></div><span class="vr-val" style="color:var(--orange)">138/88</span></div>
+        <div class="vr"><span class="vr-label">Heart Rate</span><div class="vr-bg"><div class="vr-fill g" style="width:56%"></div></div><span class="vr-val" style="color:var(--green)">74bpm</span></div>
+        <div class="vr"><span class="vr-label">SpO₂</span><div class="vr-bg"><div class="vr-fill g" style="width:96%"></div></div><span class="vr-val" style="color:var(--green)">97%</span></div>
+        <div class="vr"><span class="vr-label">Glucose</span><div class="vr-bg"><div class="vr-fill r" style="width:80%"></div></div><span class="vr-val" style="color:var(--red)">132</span></div>
+      </div>
+    </div>
+
+    <!-- Clinical Intelligence -->
+    <div class="sc-card">
+      <div class="sc-top">
+        <span class="sc-tag">Module 02</span>
+        <div class="sc-icon">
+          <svg width="28" height="28" viewBox="0 0 30 30">
+            <circle class="brain-ring" cx="15" cy="15" r="5"/>
+            <circle class="brain-ring brain-ring2" cx="15" cy="15" r="5"/>
+            <circle class="brain-core" cx="15" cy="15" r="5" fill="var(--orange)" opacity="0.8"/>
+            <circle cx="15" cy="15" r="2.2" fill="white" opacity="0.85"/>
+            <line x1="15" y1="9" x2="15" y2="11.5" stroke="rgba(240,106,29,.5)" stroke-width="1.2"/>
+            <line x1="15" y1="18.5" x2="15" y2="21" stroke="rgba(240,106,29,.5)" stroke-width="1.2"/>
+            <line x1="9" y1="15" x2="11.5" y2="15" stroke="rgba(240,106,29,.5)" stroke-width="1.2"/>
+            <line x1="18.5" y1="15" x2="21" y2="15" stroke="rgba(240,106,29,.5)" stroke-width="1.2"/>
+          </svg>
+        </div>
+      </div>
+      <div class="sc-title">Clinical Intelligence Summary</div>
+      <div class="sc-desc">AI-driven pattern recognition across all lab values — correlating findings with ICD-10 codes and LOINC standards.</div>
+      <div class="sc-mock">
+        <div class="ir"><div class="ir-dot g"></div><span class="ir-text">Thyroid function within normal range</span><span class="ir-badge ok">Normal</span></div>
+        <div class="ir"><div class="ir-dot y"></div><span class="ir-text">LDL trending upward over 3 months</span><span class="ir-badge w">Watch</span></div>
+        <div class="ir"><div class="ir-dot r"></div><span class="ir-text">HbA1c above pre-diabetic threshold</span><span class="ir-badge fl">Review</span></div>
+        <div class="ir"><div class="ir-dot g"></div><span class="ir-text">Kidney filtration rate stable</span><span class="ir-badge ok">Normal</span></div>
+      </div>
+    </div>
+
+    <!-- Biomarker -->
+    <div class="sc-card">
+      <div class="sc-top">
+        <span class="sc-tag">Module 03</span>
+        <div class="sc-icon">
+          <svg width="28" height="28" viewBox="0 0 30 30">
+            <line x1="10" y1="3" x2="10" y2="27" stroke="rgba(240,106,29,.25)" stroke-width="1.5"/>
+            <line x1="20" y1="3" x2="20" y2="27" stroke="rgba(240,106,29,.25)" stroke-width="1.5"/>
+            <line x1="10" y1="7" x2="20" y2="7" stroke="rgba(240,106,29,.4)" stroke-width="1"/>
+            <line x1="10" y1="12" x2="20" y2="12" stroke="rgba(240,106,29,.4)" stroke-width="1"/>
+            <line x1="10" y1="17" x2="20" y2="17" stroke="rgba(240,106,29,.4)" stroke-width="1"/>
+            <line x1="10" y1="22" x2="20" y2="22" stroke="rgba(240,106,29,.4)" stroke-width="1"/>
+            <circle class="dna-dot" cx="10" cy="7" r="2.5"/>
+            <circle class="dna-dot" cx="20" cy="12" r="2.5"/>
+            <circle class="dna-dot" cx="10" cy="17" r="2.5"/>
+            <circle cx="20" cy="22" r="2.5" fill="var(--orange)" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="sc-title">Biomarker Health Snapshot</div>
+      <div class="sc-desc">Comprehensive molecular and metabolic panel decoded into plain English — cholesterol, HbA1c, creatinine, liver enzymes.</div>
+      <div class="sc-mock">
+        <div class="bm-grid">
+          <div class="bm-cell"><div class="bm-val">7.2%</div><div class="bm-name">HbA1c</div><div class="bm-status" style="color:var(--orange)">⚠ High</div></div>
+          <div class="bm-cell"><div class="bm-val">145</div><div class="bm-name">LDL</div><div class="bm-status" style="color:var(--orange)">⚠ Watch</div></div>
+          <div class="bm-cell"><div class="bm-val">42</div><div class="bm-name">HDL</div><div class="bm-status" style="color:var(--red)">↓ Low</div></div>
+          <div class="bm-cell"><div class="bm-val">1.3</div><div class="bm-name">Creatinine</div><div class="bm-status" style="color:var(--orange)">⚠ Mild</div></div>
+          <div class="bm-cell"><div class="bm-val">2.4</div><div class="bm-name">TSH</div><div class="bm-status" style="color:var(--green)">✓ OK</div></div>
+          <div class="bm-cell"><div class="bm-val">13.8</div><div class="bm-name">Hgb</div><div class="bm-status" style="color:var(--green)">✓ OK</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk -->
+    <div class="sc-card">
+      <div class="sc-top">
+        <span class="sc-tag">Module 04</span>
+        <div class="sc-icon">
+          <svg width="28" height="28" viewBox="0 0 30 30">
+            <path class="shield-bg" d="M15 3 L25 7.5 L25 16 C25 22 20.5 26.5 15 28 C9.5 26.5 5 22 5 16 L5 7.5 Z"/>
+            <path class="shield-edge" d="M15 3 L25 7.5 L25 16 C25 22 20.5 26.5 15 28 C9.5 26.5 5 22 5 16 L5 7.5 Z"/>
+            <polyline class="shield-tick" points="10,15.5 13.5,19 20,11.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="sc-title">Preventive Risk Assessment</div>
+      <div class="sc-desc">Proactive risk scoring across cardiovascular, metabolic, renal and endocrine domains — act before symptoms appear.</div>
+      <div class="sc-mock">
+        <div class="risk-rows">
+          <div class="risk-row"><span class="risk-label">Cardiovascular</span><div class="risk-segs"><div class="risk-seg med"></div><div class="risk-seg med"></div><div class="risk-seg med"></div><div class="risk-seg"></div><div class="risk-seg"></div></div><span class="risk-val" style="color:var(--orange)">Med</span></div>
+          <div class="risk-row"><span class="risk-label">Metabolic</span><div class="risk-segs"><div class="risk-seg hi"></div><div class="risk-seg hi"></div><div class="risk-seg hi"></div><div class="risk-seg hi"></div><div class="risk-seg"></div></div><span class="risk-val" style="color:var(--red)">High</span></div>
+          <div class="risk-row"><span class="risk-label">Renal</span><div class="risk-segs"><div class="risk-seg low"></div><div class="risk-seg low"></div><div class="risk-seg"></div><div class="risk-seg"></div><div class="risk-seg"></div></div><span class="risk-val" style="color:var(--green)">Low</span></div>
+          <div class="risk-row"><span class="risk-label">Endocrine</span><div class="risk-segs"><div class="risk-seg med"></div><div class="risk-seg med"></div><div class="risk-seg med"></div><div class="risk-seg"></div><div class="risk-seg"></div></div><span class="risk-val" style="color:var(--orange)">Med</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ANALYZER ═══════ -->
+<section class="analyzer" id="analyzer">
+  <div class="sec-header">
+    <h2>Start Your <span>Analysis</span></h2>
+    <p>Upload your lab report image or PDF — or type your values manually below.</p>
+  </div>
+
+  <!-- compact API banner -->
+  
+
+  <div class="form-grid fade-up">
+    <div class="field-card"><label>Patient Name</label><input type="text" id="patientName" placeholder="e.g. John Doe"></div>
+    <div class="field-card"><label>Date of Report</label><input type="date" id="reportDate"></div>
+    <div class="field-card"><label>Age / Sex</label><input type="text" id="ageSex" placeholder="e.g. 45 / Male"></div>
+    <div class="field-card"><label>Known Conditions</label><input type="text" id="conditions" placeholder="e.g. Hypertension, Type 2 Diabetes"></div>
+
+    <div class="upload-card">
+      <label>Medical Report / Lab Document</label>
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.webp,.heic" onchange="handleFile(this.files[0])">
+        <div class="drop-icon">📄</div>
+        <div class="drop-title">Drop your medical report here</div>
+        <div class="drop-sub">or click to browse files</div>
+        <div class="drop-formats"><span class="fmt-pill">PDF</span><span class="fmt-pill">JPG</span><span class="fmt-pill">PNG</span><span class="fmt-pill">WEBP</span><span class="fmt-pill">HEIC</span></div>
+      </div>
+      <div class="file-preview" id="filePreview">
+        <div class="file-thumb" id="fileThumb">📄</div>
+        <div class="file-info"><div class="file-name" id="fileName">report.pdf</div><div class="file-meta" id="fileMeta">⏳ Reading...</div></div>
+        <button class="file-remove" onclick="clearFile()">×</button>
+      </div>
+      <div class="ocr-wrap" id="ocrWrap">
+        <div class="ocr-row"><span>🔍 Extracting text...</span><span id="ocrPct">0%</span></div>
+        <div class="ocr-bg"><div class="ocr-fill" id="ocrFill"></div></div>
+      </div>
+      <div class="ocr-note" id="ocrNote" style="display:none;"><div class="ocr-dot"></div>OCR runs locally — no data uploaded to any server</div>
+      <div class="manual-fallback" id="manualFallback">
+        <div class="or-div"><span>or type your lab values manually</span></div>
+        <textarea id="manualLabData" placeholder="e.g.&#10;- HbA1c: 7.2%&#10;- Fasting Glucose: 132 mg/dL&#10;- LDL: 145 mg/dL&#10;- Blood Pressure: 138/88 mmHg&#10;- Creatinine: 1.3 mg/dL"></textarea>
+      </div>
+    </div>
+
+    <div class="history-card">
+      <div class="hist-label">Historical Data (for Trend Analysis)</div>
+      <div id="histEntries">
+        <div class="hist-entry">
+          <input type="date" class="hist-date">
+          <input type="text" class="hist-data" placeholder="e.g. HbA1c: 6.9, Glucose: 118, LDL: 138">
+          <button class="btn-rem" onclick="remHist(this)">×</button>
+        </div>
+      </div>
+      <button class="btn-add-hist" onclick="addHist()">+ Add Historical Entry</button>
+    </div>
+
+    <div class="ctx-card">
+      <label>Additional Context</label>
+      <textarea id="context" placeholder="e.g. On Metformin 500mg twice daily. Started gym 3 months ago. Reports afternoon fatigue. High-protein diet."></textarea>
+    </div>
+  </div>
+
+  <!-- 3D PREMIUM ANALYZE BUTTON -->
+  <button class="analyze-btn" id="analyzeBtn" onclick="analyze()">
+    <div class="analyze-btn-inner">
+      <div class="analyze-btn-face">
+        <div class="abtn-icon">
+          <svg class="abtn-svg" width="26" height="26" viewBox="0 0 30 30">
+            <line x1="10" y1="3" x2="10" y2="27" stroke="rgba(240,106,29,.3)" stroke-width="1.5"/>
+            <line x1="20" y1="3" x2="20" y2="27" stroke="rgba(240,106,29,.3)" stroke-width="1.5"/>
+            <line x1="10" y1="7" x2="20" y2="7" stroke="rgba(240,106,29,.5)" stroke-width="1"/>
+            <line x1="10" y1="13" x2="20" y2="13" stroke="rgba(240,106,29,.5)" stroke-width="1"/>
+            <line x1="10" y1="19" x2="20" y2="19" stroke="rgba(240,106,29,.5)" stroke-width="1"/>
+            <line x1="10" y1="25" x2="20" y2="25" stroke="rgba(240,106,29,.5)" stroke-width="1"/>
+            <circle cx="10" cy="7" r="2.5" fill="var(--orange)"/>
+            <circle cx="20" cy="13" r="2.5" fill="var(--orange)"/>
+            <circle cx="10" cy="19" r="2.5" fill="var(--orange)"/>
+            <circle cx="20" cy="25" r="2.5" fill="var(--orange)" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="abtn-text">
+          <span class="abtn-title">Run Dr CetaPhill Analysis</span>
+          <span class="abtn-sub">Med-Agent Pro · Chain-of-Thought Enabled</span>
+        </div>
+      </div>
+    </div>
+  </button>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="loading" id="loading">
+    <div class="pulse-ring"><div class="pulse-inner">🔬</div></div>
+    <p style="font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:7px;">Analyzing Medical Data</p>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:22px;" id="loadStatus">Med-Agent Pro is performing cognitive chain processing…</p>
+    <div class="loading-steps">
+      <div class="step-pill" style="animation-delay:.2s">Entity Resolution</div>
+      <div class="step-pill" style="animation-delay:.7s">LOINC Mapping</div>
+      <div class="step-pill" style="animation-delay:1.2s">Correlation Analysis</div>
+      <div class="step-pill" style="animation-delay:1.7s">Delta-V Calc</div>
+      <div class="step-pill" style="animation-delay:2.2s">Hallucination Check</div>
+      <div class="step-pill" style="animation-delay:2.7s">Generating Report</div>
+    </div>
+  </div>
+
+  <div id="output">
+    <div class="out-wrap fade-up">
+      <div class="out-header">
+        <div class="out-title">📋 Health Intelligence Dashboard</div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span class="status-badge" id="statusBadge">—</span>
+          <button class="copy-btn" onclick="copyReport()">📋 Copy</button>
+        </div>
+      </div>
+      <div class="out-body" id="outputBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-dis">Doctor CetaPhill · Med-Agent Pro V3.0 · Not a substitute for professional medical advice</div>
+  <div class="footer-team" id="footerTeam" onclick="toggleTeam()">
+    <div class="footer-team-label">
+      Made by&nbsp;<span class="team-name">Team Error 404</span>&nbsp;<span class="chevron">▾</span>
+    </div>
+    <div class="team-members" id="teamMembers">
+      <div class="member-card">
+        <div class="mem-av" style="background:linear-gradient(135deg,var(--orange),var(--orange2))">R</div>
+        <div><div class="mem-name">Raman Raj</div><div class="mem-num">#01</div></div>
+      </div>
+      <div class="member-card">
+        <div class="mem-av" style="background:linear-gradient(135deg,#c47a00,#a06000)">S</div>
+        <div><div class="mem-name">Sultan Tyagi</div><div class="mem-num">#02</div></div>
+      </div>
+      <div class="member-card">
+        <div class="mem-av" style="background:linear-gradient(135deg,var(--orange3),var(--orange))">M</div>
+        <div><div class="mem-name">Mehul Kumar Singh</div><div class="mem-num">#03</div></div>
+      </div>
+      <div class="member-card">
+        <div class="mem-av" style="background:linear-gradient(135deg,var(--amber),#c47a00)">T</div>
+        <div><div class="mem-name">Tarul</div><div class="mem-num">#04</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+function toggleTeam(){const t=document.getElementById('footerTeam'),p=document.getElementById('teamMembers');t.classList.toggle('open');p.classList.toggle('vis');}
+
+// Tesseract
+let tsWorker=null,tsReady=false;
+async function initOCR(){
+  if(tsWorker)return;
+  try{tsWorker=await Tesseract.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text'){const p=Math.round((m.progress||0)*100);document.getElementById('ocrFill').style.width=p+'%';document.getElementById('ocrPct').textContent=p+'%';}}});tsReady=true;}
+  catch(e){console.warn('Tesseract init:',e);tsReady=false;}
+}
+window.addEventListener('load',()=>{
+  document.getElementById('reportDate').valueAsDate=new Date();
+  initOCR();
+});
+
+// File
+let uFile=null,uB64=null,uMime=null,uDataUrl=null,ocrText='',ocrBusy=false,ocrDone=false;
+const dz=document.getElementById('dropZone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+
+function handleFile(file){
+  if(!file)return;
+  uFile=file;ocrText='';ocrDone=false;
+  const tm={pdf:'application/pdf',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',heic:'image/jpeg'};
+  const ext=file.name.split('.').pop().toLowerCase();
+  uMime=file.type||tm[ext]||'image/jpeg';
+  const r=new FileReader();
+  r.onload=e=>{
+    uB64=e.target.result.split(',')[1];uDataUrl=e.target.result;
+    document.getElementById('fileName').textContent=file.name;
+    const ext2=file.name.split('.').pop().toLowerCase();
+    const th=document.getElementById('fileThumb');
+    if(['jpg','jpeg','png','webp'].includes(ext2)){th.innerHTML=`<img src="${e.target.result}" alt="p">`;}else{th.innerHTML='📄';}
+    document.getElementById('filePreview').classList.add('active');
+    document.getElementById('dropZone').style.display='none';
+    document.getElementById('manualFallback').style.display='none';
+    const mt=document.getElementById('fileMeta');
+    if(uMime==='application/pdf'){mt.textContent='✓ PDF ready';mt.style.color='var(--green)';document.getElementById('manualFallback').style.display='block';document.getElementById('ocrNote').style.display='flex';ocrDone=true;return;}
+    mt.textContent='⏳ Reading document...';mt.style.color='var(--yellow)';
+    document.getElementById('ocrWrap').classList.add('active');
+    document.getElementById('ocrFill').style.width='0%';
+    document.getElementById('ocrPct').textContent='0%';
+    startOCR(e.target.result,mt);
+  };
+  r.readAsDataURL(file);
+}
+async function startOCR(dataUrl,metaEl){
+  ocrBusy=true;ocrDone=false;ocrText='';
+  try{
+    await initOCR();
+    if(!tsReady)throw new Error('no worker');
+    const{data:{text}}=await tsWorker.recognize(dataUrl);
+    ocrText=text.trim();ocrDone=true;
+    metaEl.textContent='✓ Text extracted — ready';metaEl.style.color='var(--green)';
+    document.getElementById('ocrWrap').classList.remove('active');
+    document.getElementById('ocrNote').style.display='flex';
+    document.getElementById('ocrFill').style.width='100%';
+  }catch(err){
+    ocrText='';ocrDone=true;
+    metaEl.textContent='⚠ OCR failed — type values manually';metaEl.style.color='var(--red)';
+    document.getElementById('ocrWrap').classList.remove('active');
+    document.getElementById('manualFallback').style.display='block';
+  }
+  ocrBusy=false;
+}
+function clearFile(){
+  uFile=null;uB64=null;uMime=null;uDataUrl=null;ocrText='';ocrDone=false;ocrBusy=false;
+  document.getElementById('filePreview').classList.remove('active');
+  document.getElementById('ocrWrap').classList.remove('active');
+  document.getElementById('ocrNote').style.display='none';
+  document.getElementById('manualFallback').style.display='block';
+  document.getElementById('dropZone').style.display='block';
+  document.getElementById('fileInput').value='';
+  document.getElementById('fileMeta').style.color='var(--green)';
+}
+
+function addHist(){const d=document.createElement('div');d.className='hist-entry';d.innerHTML='<input type="date" class="hist-date"><input type="text" class="hist-data" placeholder="e.g. HbA1c: 6.9, Glucose: 118"><button class="btn-rem" onclick="remHist(this)">×</button>';document.getElementById('histEntries').appendChild(d);}
+function remHist(btn){btn.closest('.hist-entry').remove();}
+function buildHist(){let t='';document.querySelectorAll('.hist-entry').forEach(e=>{const d=e.querySelector('.hist-date').value,v=e.querySelector('.hist-data').value;if(d||v)t+=`\n• ${d||'Date N/A'}: ${v||'No data'}`;});return t||'No historical data provided.';}
+
+function loadSample(){
+  document.getElementById('patientName').value='John Doe';
+  document.getElementById('ageSex').value='48 / Male';
+  document.getElementById('conditions').value='Hypertension, Pre-diabetes';
+  document.querySelector('.hist-date').value='2024-09-15';
+  document.querySelector('.hist-data').value='HbA1c: 6.8, Glucose: 118, LDL: 138, Creatinine: 1.1';
+  document.getElementById('context').value='On Metformin 500mg twice daily and Amlodipine 5mg. Started gym 3 months ago. Reports fatigue in afternoons.';
+  document.getElementById('manualLabData').value='- HbA1c: 7.2%\n- Fasting Glucose: 132 mg/dL\n- LDL: 145 mg/dL\n- HDL: 42 mg/dL\n- Blood Pressure: 138/88 mmHg\n- Creatinine: 1.3 mg/dL\n- TSH: 2.4 mIU/L\n- Hemoglobin: 13.8 g/dL';
+  document.getElementById('analyzer').scrollIntoView({behavior:'smooth'});
+}
+
+
+// Race models
+
+
+
+async function analyze(){
+  const eb=document.getElementById('errorBox');eb.classList.remove('active');
+  const name=document.getElementById('patientName').value.trim()||'Anonymous Patient';
+  const date=document.getElementById('reportDate').value||new Date().toLocaleDateString();
+  const ageSex=document.getElementById('ageSex').value.trim()||'Not specified';
+  const cond=document.getElementById('conditions').value.trim()||'None reported';
+  const ctx=document.getElementById('context').value.trim();
+  const hist=buildHist();
+  const manual=document.getElementById('manualLabData').value.trim();
+  if(!uB64&&!manual){eb.textContent='⚠ Please upload a report OR type your lab values below.';eb.classList.add('active');return;}
+  const btn=document.getElementById('analyzeBtn');btn.disabled=true;
+  document.getElementById('loading').classList.add('active');
+  document.getElementById('output').classList.remove('active');
+  if(ocrBusy){document.getElementById('loadStatus').textContent='Waiting for OCR to finish…';await new Promise(r=>{const c=setInterval(()=>{if(!ocrBusy){clearInterval(c);r();}},200);});}
+  document.getElementById('loadStatus').textContent='Med-Agent Pro is performing cognitive chain processing…';
+  const sys='You are Doctor CetaPhill, a friendly health report reader. Explain lab results in PLAIN, SIMPLE ENGLISH like a caring doctor. No jargon. Use "may suggest" or "could mean" — never diagnose. Keep each point to 1-2 sentences.';
+  let lab='No lab data.';
+  if(manual)lab=`Lab Values (typed):\n${manual}`;
+  else if(ocrText)lab=`Lab Values (OCR):\n${ocrText}`;
+  else if(uB64)lab='Lab report uploaded but text could not be extracted. Please type key values manually.';
+  const um=`${lab}\n\nPatient: ${name} | Date: ${date} | Age/Sex: ${ageSex}\nConditions: ${cond}\nHistory: ${hist}\nContext: ${ctx||'None'}\n\nWrite using EXACTLY this format:\n\n# 👤 ${name}'s Health Report\n**Date:** ${date} | **Age/Sex:** ${ageSex}\n**Overall Health:** [🟢 Looking Good! | 🟡 A Few Things to Watch | 🔴 Needs Attention Soon]\n\n---\n\n## 📋 Quick Summary (Read This First)\n2-3 plain sentences.\n\n---\n\n## 🔬 Your Test Results — Plain English\n| Test Name | Your Result | Normal Range | Status | What This Means (Simple) |\n|-----------|-------------|-------------|--------|---------------------------|\n[one row per test — Status: 🟢 Great / 🟡 Watch / 🔴 Act Now]\n\n---\n\n## 📈 Changes Since Last Time\n[if history: explain. if not: "First report — will track next time!"]\n\n---\n\n## ⚠️ Things to Keep an Eye On\n- [concern]\n\n---\n\n## ✅ What You Should Do Now\n🏥 **See a Doctor:** - [specific]\n🏃 **Exercise:** - [specific]\n🥗 **Food & Diet:** - [specific]\n💧 **Daily Habits:** - [specific]\n💊 **Medication Reminder:** - [specific]\n\n---\n\n## 🚨 Urgent Alerts\n[Dangerous: 🔴 Act Now: what to do. OK: 🟢 No Emergency: stable.]\n\n---\n⚕️ *For information only. Always talk to your doctor.*`;
+ try {
+  const response = await fetch("http://localhost:8000/analyze", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      text: um
+    })
+  });
+
+  const data = await response.json();
+
+  document.getElementById('loading').classList.remove('active');
+  renderOutput(data.analysis);
+
+} catch (err) {
+  document.getElementById('loading').classList.remove('active');
+  eb.textContent = "⚠ Backend not running. Start FastAPI server.";
+  eb.classList.add('active');
+}
+  btn.disabled=false;
+}
+
+function renderOutput(md){
+  let cls='sb-watch',txt='🟡 A Few Things to Watch';
+  if(md.includes('🟢')&&md.includes('Looking Good')){cls='sb-ok';txt='🟢 Looking Good!';}
+  if(md.includes('🔴')&&(md.includes('Needs Attention')||md.includes('Act Now'))){cls='sb-crit';txt='🔴 Needs Attention';}
+  document.getElementById('statusBadge').textContent=txt;
+  document.getElementById('statusBadge').className='status-badge '+cls;
+  const secs=md.split(/\n(?=##\s|#\s)/);let html='';
+  secs.forEach(sec=>{
+    const lines=sec.trim().split('\n').filter(l=>l.trim());if(!lines.length)return;
+    const h=lines[0],b=lines.slice(1).join('\n');
+    if(h.startsWith('# '))return;
+    let cc='rep-card';
+    if(h.includes('🚨'))cc+=' c-urg';
+    if(h.includes('✅'))cc+=' c-act';
+    if(h.includes('📋'))cc+=' c-sum';
+    if(h.includes('⚠'))cc+=' c-watch';
+    let bh='';
+    if(b.includes('|'))bh=rTable(b);
+    else if(h.includes('✅'))bh=rAction(b);
+    else bh=rBody(b);
+    html+=`<div class="${cc}"><div class="rc-h">${ri(h.replace(/^##?\s*/,''))}</div>${bh}</div>`;
+  });
+  document.getElementById('outputBody').innerHTML=html;
+  document.getElementById('output').classList.add('active');
+  window._lastRep=md;
+  setTimeout(()=>document.getElementById('output').scrollIntoView({behavior:'smooth',block:'start'}),150);
+}
+function ri(t){return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>');}
+function rBody(text){
+  let html='';const lines=text.split('\n');let inL=false;
+  lines.forEach(line=>{
+    line=line.trim();if(!line||line==='---')return;
+    if(line.match(/^[-•*]\s+/)||line.match(/^\d+\.\s+/)){
+      if(!inL){html+='<ul class="rc-list">';inL=true;}
+      const c=line.replace(/^[-•*\d.]+\s+/,'');
+      let lc='';if(c.startsWith('🟢'))lc='li-g';if(c.startsWith('🟡'))lc='li-y';if(c.startsWith('🔴'))lc='li-r';
+      html+=`<li class="${lc}">${ri(c)}</li>`;
+    }else{
+      if(inL){html+='</ul>';inL=false;}
+      if((line.startsWith('**')&&line.endsWith('**'))||(line.includes('**')&&line.endsWith(':'))){html+=`<div class="rc-sub">${ri(line)}</div>`;}
+      else{const sm=line.match(/(🟢|🟡|🔴)\s+\*\*(.+?)\*\*[:：]?\s*(.*)/);if(sm){const cm={'🟢':'sl-g','🟡':'sl-y','🔴':'sl-r'};html+=`<div class="sl ${cm[sm[1]]||''}">${sm[1]} <strong>${sm[2]}</strong>${sm[3]?': '+ri(sm[3]):''}</div>`;}else html+=`<p class="rc-p">${ri(line)}</p>`;}
+    }
+  });
+  if(inL)html+='</ul>';return html;
+}
+function rAction(text){
+  const blocks=text.split(/\n(?=🏥|🏃|🥗|💧|💊|⚕️)/);let html='<div class="act-grid">';
+  blocks.forEach(b=>{
+    if(!b.trim())return;const ls=b.trim().split('\n');const title=ls[0];const items=ls.slice(1).filter(l=>l.trim()&&!l.match(/^---/));
+    const em={'🏥':'#ff4d4d','🏃':colors,'🥗':'var(--green)','💧':'var(--orange)','💊':'var(--amber)','⚕️':'var(--muted)'};
+    const e=title.match(/^(🏥|🏃|🥗|💧|💊|⚕️)/)?.[1]||'';
+    const colorMap={'🏥':'#ff5050','🏃':'var(--orange3)','🥗':'var(--green)','💧':'var(--orange)','💊':'var(--amber)','⚕️':'var(--muted)'};
+    const c=colorMap[e]||'var(--muted)';
+    html+=`<div class="act-block" style="border-left:3px solid ${c}"><div class="act-title" style="color:${c}">${ri(title)}</div>`;
+    items.forEach(it=>{const cl=it.replace(/^[-•*]\s+/,'').trim();if(cl)html+=`<div class="act-item">${ri(cl)}</div>`;});
+    html+='</div>';
+  });
+  return html+'</div>';
+}
+function rTable(text){
+  const rows=text.split('\n').filter(r=>r.trim()&&!r.match(/^\|[\s\-|:]+\|$/));
+  if(!rows.length)return rBody(text);
+  let t='<div class="tw"><table>';
+  rows.forEach((row,i)=>{
+    const cells=row.split('|').slice(1,-1);if(!cells.length)return;
+    const tag=i===0?'th':'td';t+='<tr>';
+    cells.forEach(c=>{const ct=c.trim();let x='';if(ct.includes('🟢'))x=' class="sg"';else if(ct.includes('🟡'))x=' class="sy"';else if(ct.includes('🔴'))x=' class="sr"';t+=`<${tag}${x}>${ri(ct)}</${tag}>`;});
+    t+='</tr>';
+  });
+  return t+'</table></div>';
+}
+function copyReport(){if(!window._lastRep)return;navigator.clipboard.writeText(window._lastRep).then(()=>{const b=document.querySelector('.copy-btn');const o=b.textContent;b.textContent='✓ Copied!';setTimeout(()=>b.textContent=o,2000);});}
+
+// fix undefined `colors` reference in rAction
+const colors='var(--orange3)';
+</script>
 </body>
 </html>
